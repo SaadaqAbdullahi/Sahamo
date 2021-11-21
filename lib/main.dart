@@ -1,66 +1,49 @@
-import 'package:flutter/material.dart';
-import 'package:sahamo/helper/authenticate.dart';
-import 'package:splashscreen/splashscreen.dart';
-import 'package:firebase_core/firebase_core.dart';
+//Authored by: Saadaq Abdullahi
+//Last modified: May 12, 2021
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
+import 'package:flutter/material.dart';
+import 'package:group_chat_app/helper/shared_preferences.dart';
+import 'package:group_chat_app/views/home_page.dart';
+import 'package:group_chat_app/views/welcome_page.dart';
+
+void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: new SplashScreen(
-        //creating the initial loading screen
-        seconds: 4,
-        navigateAfterSeconds: new Home(),
-        //load homepage after seconds
-        title: new Text(
-          'SAHAMO',
-          textAlign: TextAlign.center,
-          style: new TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
-            color: Colors.white,
-          ),
-        ),
-        image: new Image.asset("images/iskconlogoblack.png"),
-        backgroundColor: Colors.black,
-        styleTextUnderTheLoader: new TextStyle(
-          color: Colors.white,
-        ),
-        photoSize: 100.0,
-        onClick: () => print("Flutter Egypt"),
-        loaderColor: Colors.red.shade700,
-      ),
-    );
-  }
-}
 
-class Home extends StatelessWidget {
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserLoggedInStatus();
+  }
+
+  //define a function to retrieve user shared preference info
+  _getUserLoggedInStatus() async {
+    await HelperFunctions.getUserLoggedInSharedPreference().then((value) {
+      if(value != null) {
+        setState(() {
+          _isLoggedIn = value;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sahamo',
-      theme: ThemeData(
-        primaryColor: Color(0xff145C9E),
-        scaffoldBackgroundColor: Color(0xff1F1F1F),
-        primarySwatch: Colors.red,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Authenticate(),
+      title: 'Group Chats',
+      debugShowCheckedModeBanner: false,
+      //define light and dark mode themes
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      //if a user is already logged in go to home page, else go to welcome screen
+      home: _isLoggedIn ? HomePage() : WelcomeScreen(),
     );
   }
 }
-
-
-
