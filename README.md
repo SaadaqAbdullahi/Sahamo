@@ -1,6 +1,6 @@
 # Sahamo
 
-A group Messaging Mobile Application using Flutter
+A Group Messaging Mobile Application For Both iOS and Android Using Flutter
 
 # Technologies Used
 
